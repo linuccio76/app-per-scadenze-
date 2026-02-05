@@ -1,2 +1,1406 @@
-# test-
-jjjjjjjj
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Demo - Gestione Scadenze Economato</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0c4b33 0%, #1a7d5e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            color: #333;
+            min-height: 90vh;
+        }
+        
+        /* Header App */
+        .app-header {
+            background: linear-gradient(135deg, #0c4b33, #1a7d5e);
+            color: white;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ff9800;
+        }
+        
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .app-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .logo {
+            font-size: 32px;
+            background: white;
+            color: #0c4b33;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+        
+        /* Menu Navigazione */
+        .app-nav {
+            background: #f8f9fa;
+            padding: 0 40px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            gap: 2px;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .nav-tab.active {
+            color: #0c4b33;
+            border-bottom-color: #ff9800;
+            background: white;
+        }
+        
+        /* Contenuto App */
+        .app-content {
+            display: flex;
+            min-height: 70vh;
+        }
+        
+        .main-content {
+            flex: 3;
+            padding: 30px 40px;
+        }
+        
+        .sidebar {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 30px;
+            border-left: 1px solid #dee2e6;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-top: 5px solid #0c4b33;
+        }
+        
+        .card-critical {
+            border-top-color: #f44336;
+            animation: pulse 2s infinite;
+        }
+        
+        .card-warning {
+            border-top-color: #ff9800;
+        }
+        
+        .card-success {
+            border-top-color: #4CAF50;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 5px 20px rgba(244, 67, 54, 0.2); }
+            50% { box-shadow: 0 5px 30px rgba(244, 67, 54, 0.4); }
+            100% { box-shadow: 0 5px 20px rgba(244, 67, 54, 0.2); }
+        }
+        
+        .card-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0c4b33;
+            margin-bottom: 10px;
+        }
+        
+        .card-label {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        /* Lista Prodotti */
+        .products-list {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .products-header {
+            background: #f8f9fa;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            font-weight: 600;
+            color: #0c4b33;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .product-item {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+        
+        .product-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .product-item.critical {
+            background: #fff2f2;
+        }
+        
+        .product-item.warning {
+            background: #fff8e1;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-critical {
+            background: #ffebee;
+            color: #f44336;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .status-warning {
+            background: #fff8e1;
+            color: #ff9800;
+            border: 1px solid #ffe082;
+        }
+        
+        .status-ok {
+            background: #e8f5e9;
+            color: #4CAF50;
+            border: 1px solid #c8e6c9;
+        }
+        
+        /* Pulsanti Azioni */
+        .action-btn {
+            background: #0c4b33;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #1a7d5e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(12, 75, 51, 0.3);
+        }
+        
+        .action-btn-warning {
+            background: #ff9800;
+        }
+        
+        .action-btn-warning:hover {
+            background: #ffb74d;
+        }
+        
+        /* Form Aggiunta Prodotto */
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #0c4b33;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Alert System */
+        .alert-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .alert-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #0c4b33;
+        }
+        
+        .alert-item.critical {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+        
+        .alert-item.warning {
+            border-left-color: #ff9800;
+            background: #fff8e1;
+        }
+        
+        /* Sidebar */
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-title {
+            color: #0c4b33;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff9800;
+        }
+        
+        .quick-stats {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: #0c4b33;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 10px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .app-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                border-left: none;
+                border-top: 1px solid #dee2e6;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-header, .product-item {
+                grid-template-columns: 2fr 1fr 1fr;
+                overflow-x: auto;
+            }
+            
+            .product-item > div:nth-child(4),
+            .product-item > div:nth-child(5),
+            .products-header > div:nth-child(4),
+            .products-header > div:nth-child(5) {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animation for alerts */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .new-alert {
+            animation: slideIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div>
+                <h1 class="app-title">Gestione Scadenze Economato</h1>
+                <p class="app-subtitle">Sistema di controllo e ottimizzazione per ridurre lo spreco alimentare</p>
+            </div>
+            <div class="logo">ES</div>
+        </header>
+        
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <ul class="nav-tabs">
+                <li class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</li>
+                <li class="nav-tab" onclick="showTab('products')">📦 Gestione Prodotti</li>
+                <li class="nav-tab" onclick="showTab('alerts')">⚠️ Sistema Alert</li>
+                <li class="nav-tab" onclick="showTab('strategies')">🎯 Strategie Anti-Spreco</li>
+                <li class="nav-tab" onclick="showTab('reports')">📈 Report</li>
+            </ul>
+        </nav>
+        
+        <!-- Content Area -->
+        <div class="app-content">
+            <main class="main-content">
+                <!-- Dashboard Tab -->
+                <div id="dashboard-tab" class="tab-content">
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card card-critical">
+                            <div class="card-title">🚨 Prodotti in Scadenza Critica</div>
+                            <div class="card-value" id="critical-count">7</div>
+                            <div class="card-label">Scadono entro 3 giorni</div>
+                        </div>
+                        
+                        <div class="dashboard-card card-warning">
+                            <div class="card-title">⚠️ TMC in Avvicinamento</div>
+                            <div class="card-value" id="warning-count">12</div>
+                            <div class="card-label">Termine Minimo Conservazione</div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-title">📊 Valore a Rischio</div>
+                            <div class="card-value">€ 1.250</div>
+                            <div class="card-label">Prodotti da gestire urgentemente</div>
+                        </div>
+                        
+                        <div class="dashboard-card card-success">
+                            <div class="card-title">✅ Donazioni Effettuate</div>
+                            <div class="card-value">24</div>
+                            <div class="card-label">Prodotti salvati questo mese</div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-container">
+                        <h3 style="color: #0c4b33; margin-bottom: 20px;">⚠️ Alert Imminenti</h3>
+                        <div id="alerts-list">
+                            <!-- Alerts will be inserted here -->
+                        </div>
+                        <button class="action-btn" style="margin-top: 20px;" onclick="generateNewAlert()">
+                            <span>🔔</span> Simula Nuovo Alert
+                        </button>
+                    </div>
+                    
+                    <div class="form-container">
+                        <h3 style="color: #0c4b33; margin-bottom: 20px;">➕ Aggiungi Nuovo Prodotto</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Nome Prodotto</label>
+                                <input type="text" class="form-input" id="product-name" placeholder="Es. Pomodori San Marzano">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Categoria</label>
+                                <select class="form-input" id="product-category">
+                                    <option value="vegetable">🥦 Ortofrutta</option>
+                                    <option value="meat">🥩 Carni</option>
+                                    <option value="fish">🐟 Pesce</option>
+                                    <option value="dairy">🧀 Latticini</option>
+                                    <option value="dry">🍚 Dispensa Secca</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Quantità</label>
+                                <input type="number" class="form-input" id="product-quantity" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Data Scadenza/TMC</label>
+                                <input type="date" class="form-input" id="product-expiry">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tipo di Scadenza</label>
+                                <select class="form-input" id="expiry-type">
+                                    <option value="tmc">📅 TMC (Termine Minimo Conservazione)</option>
+                                    <option value="expiry">⚠️ Data di Scadenza</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Posizione Magazzino</label>
+                                <input type="text" class="form-input" id="product-location" placeholder="Es. Ripiano 3, Frigorifero A">
+                            </div>
+                        </div>
+                        <button class="action-btn" onclick="addProduct()">
+                            <span>➕</span> Aggiungi Prodotto
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Gestione Prodotti Tab -->
+                <div id="products-tab" class="tab-content" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color: #0c4b33;">📦 Inventario Prodotti</h3>
+                        <button class="action-btn" onclick="showTab('dashboard')">
+                            <span>➕</span> Aggiungi Nuovo
+                        </button>
+                    </div>
+                    
+                    <div class="products-list">
+                        <div class="products-header">
+                            <div>Prodotto</div>
+                            <div>Scadenza</div>
+                            <div>Giorni Rimanenti</div>
+                            <div>Tipo</div>
+                            <div>Azioni</div>
+                        </div>
+                        <div id="products-container">
+                            <!-- Products will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sistema Alert Tab -->
+                <div id="alerts-tab" class="tab-content" style="display: none;">
+                    <h3 style="color: #0c4b33; margin-bottom: 20px;">🔔 Sistema di Alert Intelligente</h3>
+                    
+                    <div class="form-container">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">🔴 Alert Critici (Scadenza)</label>
+                                <div style="margin-top: 10px;">
+                                    <input type="checkbox" id="alert-3d" checked> 3 giorni prima<br>
+                                    <input type="checkbox" id="alert-1d" checked> 1 giorno prima<br>
+                                    <input type="checkbox" id="alert-same" checked> Giorno stesso
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🟡 Alert Preventivi (TMC)</label>
+                                <div style="margin-top: 10px;">
+                                    <input type="checkbox" id="alert-7d" checked> 7 giorni prima<br>
+                                    <input type="checkbox" id="alert-3d-tmc" checked> 3 giorni prima<br>
+                                    <input type="checkbox" id="alert-1d-tmc" checked> 1 giorno prima
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">📧 Notifiche Email</label>
+                                <div style="margin-top: 10px;">
+                                    <input type="email" class="form-input" placeholder="email@esempio.it" id="alert-email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🔔 Notifiche Push</label>
+                                <div style="margin-top: 10px;">
+                                    <input type="checkbox" id="push-morning" checked> Mattina (8:00)<br>
+                                    <input type="checkbox" id="push-afternoon" checked> Pomeriggio (15:00)<br>
+                                    <input type="checkbox" id="push-evening"> Sera (20:00)
+                                </div>
+                            </div>
+                        </div>
+                        <button class="action-btn" onclick="saveAlertSettings()">
+                            <span>💾</span> Salva Impostazioni Alert
+                        </button>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                        <div class="dashboard-card">
+                            <div class="card-title">📊 Etichette Visive</div>
+                            <div style="margin-top: 15px;">
+                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <div style="width: 20px; height: 20px; background: #f44336; margin-right: 10px; border-radius: 3px;"></div>
+                                    <span>🔴 Scadenza Imminente (0-3 giorni)</span>
+                                </div>
+                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <div style="width: 20px; height: 20px; background: #ff9800; margin-right: 10px; border-radius: 3px;"></div>
+                                    <span>🟡 TMC Vicino (4-7 giorni)</span>
+                                </div>
+                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <div style="width: 20px; height: 20px; background: #4CAF50; margin-right: 10px; border-radius: 3px;"></div>
+                                    <span>🟢 Normale (più di 7 giorni)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-title">🔄 Controlli Regolari</div>
+                            <div style="margin-top: 15px;">
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Lunedì e Giovedì</strong><br>
+                                    <small>Controllo manuale completo</small>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Ogni Giorno</strong><br>
+                                    <small>Check rapido prodotti critici</small>
+                                </div>
+                                <button class="action-btn action-btn-warning" style="width: 100%; margin-top: 10px;">
+                                    <span>📝</span> Pianifica Controllo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Strategie Anti-Spreco Tab -->
+                <div id="strategies-tab" class="tab-content" style="display: none;">
+                    <h3 style="color: #0c4b33; margin-bottom: 20px;">🎯 Strategie di Smaltimento Preventivo</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 30px;">
+                        <div class="dashboard-card">
+                            <div class="card-title">🔄 Principio FIFO</div>
+                            <p style="margin-top: 10px; color: #666;">Assicurati che i prodotti con scadenza più ravvicinata siano sempre i primi ad essere utilizzati.</p>
+                            <button class="action-btn" style="margin-top: 15px;" onclick="showFIFOGuide()">
+                                <span>📖</span> Guida Applicazione
+                            </button>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-title">🍽️ Menu Dinamici</div>
+                            <p style="margin-top: 10px; color: #666;">Collabora con la cucina per creare piatti del giorno basati su prodotti in scadenza.</p>
+                            <button class="action-btn" style="margin-top: 15px;" onclick="generateMenuSuggestions()">
+                                <span>💡</span> Suggerisci Menu
+                            </button>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-title">🤝 Donazioni Strutturate</div>
+                            <p style="margin-top: 10px; color: #666;">Collabora con enti benefici locali per donare prodotti con largo anticipo.</p>
+                            <button class="action-btn" style="margin-top: 15px;" onclick="showDonationModal()">
+                                <span>❤️</span> Gestisci Donazioni
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-container">
+                        <h4 style="color: #0c4b33; margin-bottom: 15px;">🔄 Simulazione Rotazione Magazzino</h4>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 15px;">
+                                <div style="flex: 1;">
+                                    <label class="form-label">Prodotto in Arrivo</label>
+                                    <select class="form-input" id="new-product">
+                                        <option>Latte Fresco (Scadenza: 10/12)</option>
+                                        <option>Pomodori (Scadenza: 15/12)</option>
+                                        <option>Formaggio (Scadenza: 20/12)</option>
+                                    </select>
+                                </div>
+                                <div style="font-size: 24px;">→</div>
+                                <div style="flex: 1;">
+                                    <label class="form-label">Prodotto Presente</label>
+                                    <select class="form-input" id="existing-product">
+                                        <option>Latte Fresco (Scadenza: 05/12)</option>
+                                        <option>Pomodori (Scadenza: 08/12)</option>
+                                        <option>Formaggio (Scadenza: 12/12)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="action-btn" onclick="simulateRotation()">
+                                <span>🔄</span> Simula Rotazione FIFO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Report Tab -->
+                <div id="reports-tab" class="tab-content" style="display: none;">
+                    <h3 style="color: #0c4b33; margin-bottom: 20px;">📈 Report e Statistiche</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                        <div>
+                            <div class="dashboard-card">
+                                <div class="card-title">📊 Andamento Sprechi</div>
+                                <div style="height: 200px; display: flex; align-items: flex-end; gap: 10px; margin-top: 20px;">
+                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #f44336; width: 80%; height: 150px; border-radius: 5px;"></div>
+                                        <div style="margin-top: 10px;">Gen</div>
+                                    </div>
+                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #ff9800; width: 80%; height: 120px; border-radius: 5px;"></div>
+                                        <div style="margin-top: 10px;">Feb</div>
+                                    </div>
+                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #4CAF50; width: 80%; height: 90px; border-radius: 5px;"></div>
+                                        <div style="margin-top: 10px;">Mar</div>
+                                    </div>
+                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #2196F3; width: 80%; height: 70px; border-radius: 5px;"></div>
+                                        <div style="margin-top: 10px;">Apr</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-card" style="margin-top: 25px;">
+                                <div class="card-title">💸 Risparmio Economico</div>
+                                <div style="margin-top: 20px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                        <span>Prodotti salvati da scadenza:</span>
+                                        <strong>€ 3.250</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                        <span>Riduzione costi smaltimento:</span>
+                                        <strong>€ 850</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                        <span>Incentivi fiscali:</span>
+                                        <strong>€ 420</strong>
+                                    </div>
+                                    <div style="height: 2px; background: #eee; margin: 15px 0;"></div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 18px; color: #0c4b33;">
+                                        <strong>Totale risparmiato:</strong>
+                                        <strong>€ 4.520</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="dashboard-card">
+                                <div class="card-title">🎯 KPI Performance</div>
+                                <div style="margin-top: 20px;">
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span>Tasso di spreco:</span>
+                                            <strong>3.2%</strong>
+                                        </div>
+                                        <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                                            <div style="width: 32%; height: 100%; background: #4CAF50;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span>Efficienza FIFO:</span>
+                                            <strong>94%</strong>
+                                        </div>
+                                        <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                                            <div style="width: 94%; height: 100%; background: #2196F3;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span>Prodotti donati:</span>
+                                            <strong>127</strong>
+                                        </div>
+                                        <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                                            <div style="width: 85%; height: 100%; background: #ff9800;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="action-btn" style="width: 100%; margin-top: 20px;">
+                                <span>📥</span> Esporta Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">📋 Quick Actions</h3>
+                    <div style="display: grid; gap: 10px;">
+                        <button class="action-btn" onclick="showTab('products')">
+                            <span>🔍</span> Controllo Scadenze
+                        </button>
+                        <button class="action-btn" onclick="generateAlertReport()">
+                            <span>📋</span> Report Alert Giornaliero
+                        </button>
+                        <button class="action-btn" onclick="showDonationModal()">
+                            <span>🤝</span> Gestione Donazioni
+                        </button>
+                        <button class="action-btn" onclick="showTrainingModal()">
+                            <span>🎓</span> Training Staff
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">📊 Statistiche Veloci</h3>
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <span>Prodotti Totali:</span>
+                            <span class="stat-value">156</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>In Scadenza (7gg):</span>
+                            <span class="stat-value">19</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Valore Inventario:</span>
+                            <span class="stat-value">€ 25.430</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Donazioni Mese:</span>
+                            <span class="stat-value">24</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Risparmio Totale:</span>
+                            <span class="stat-value">€ 4.520</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">ℹ️ Differenze TMC vs Scadenza</h3>
+                    <div class="quick-stats">
+                        <div style="margin-bottom: 15px; padding: 10px; background: #e8f5e9; border-radius: 8px;">
+                            <strong>📅 TMC</strong><br>
+                            <small>"Da consumarsi preferibilmente entro"</small>
+                            <div style="font-size: 12px; color: #666; margin-top: 5px;">Prodotto ancora commestibile</div>
+                        </div>
+                        <div style="padding: 10px; background: #ffebee; border-radius: 8px;">
+                            <strong>⚠️ Data di Scadenza</strong><br>
+                            <small>"Da consumarsi entro"</small>
+                            <div style="font-size: 12px; color: #666; margin-top: 5px;">Prodotto potenzialmente pericoloso</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+    <!-- Modal per Donazioni -->
+    <div class="modal" id="donation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: #0c4b33;">🤝 Gestione Donazioni</h3>
+                <button class="modal-close" onclick="closeModal('donation-modal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ente Benefico</label>
+                <select class="form-input">
+                    <option>Banco Alimentare Locale</option>
+                    <option>Caritas Diocesana</option>
+                    <option>Mensa dei Poveri</option>
+                    <option>Casa Famiglia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Prodotti da Donare</label>
+                <div id="donation-products" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+                    <!-- Products for donation -->
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Data Ritiro</label>
+                <input type="date" class="form-input" value="2024-12-10">
+            </div>
+            <button class="action-btn" style="width: 100%; margin-top: 20px;">
+                <span>📋</span> Genera Documentazione Legge Gadda
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal per Training -->
+    <div class="modal" id="training-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: #0c4b33;">🎓 Training Gestione Scadenze</h3>
+                <button class="modal-close" onclick="closeModal('training-modal')">&times;</button>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <h4>Video Training Disponibili:</h4>
+                <div style="margin-top: 15px;">
+                    <div style="padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px;">
+                        ▶️ Applicazione Sistema FIFO
+                    </div>
+                    <div style="padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px;">
+                        ▶️ Differenza TMC vs Scadenza
+                    </div>
+                    <div style="padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px;">
+                        ▶️ Procedure Donazione
+                    </div>
+                </div>
+            </div>
+            <button class="action-btn" style="width: 100%;">
+                <span>📋</span> Quiz di Verifica
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal FIFO Guide -->
+    <div class="modal" id="fifo-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: #0c4b33;">🔄 Guida Applicazione FIFO</h3>
+                <button class="modal-close" onclick="closeModal('fifo-modal')">&times;</button>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <h4>Passaggi per implementare FIFO:</h4>
+                <ol style="margin-left: 20px; margin-top: 15px;">
+                    <li style="margin-bottom: 10px;">Etichetta ogni prodotto con data di arrivo</li>
+                    <li style="margin-bottom: 10px;">Posiziona i prodotti nuovi dietro a quelli vecchi</li>
+                    <li style="margin-bottom: 10px;">Utilizza sempre i prodotti con scadenza più ravvicinata</li>
+                    <li style="margin-bottom: 10px;">Esegui controlli settimanali delle posizioni</li>
+                    <li>Forma il personale sui principi FIFO</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dati iniziali
+        let products = [
+            { id: 1, name: "Latte Fresco", category: "dairy", expiry: "2024-12-05", type: "expiry", quantity: 24, location: "Frigo A, Ripiano 2" },
+            { id: 2, name: "Pomodori San Marzano", category: "vegetable", expiry: "2024-12-08", type: "tmc", quantity: 15, location: "Magazzino, Zona 3" },
+            { id: 3, name: "Filetto di Merluzzo", category: "fish", expiry: "2024-12-03", type: "expiry", quantity: 8, location: "Congelatore B" },
+            { id: 4, name: "Formaggio Parmigiano", category: "dairy", expiry: "2024-12-20", type: "tmc", quantity: 5, location: "Frigo C, Ripiano 1" },
+            { id: 5, name: "Riso Carnaroli", category: "dry", expiry: "2025-06-15", type: "tmc", quantity: 12, location: "Magazzino, Zona 1" },
+            { id: 6, name: "Prosciutto Crudo", category: "meat", expiry: "2024-12-06", type: "expiry", quantity: 18, location: "Frigo A, Ripiano 3" },
+            { id: 7, name: "Spinaci Freschi", category: "vegetable", expiry: "2024-12-04", type: "expiry", quantity: 10, location: "Frigo B, Ripiano 2" }
+        ];
+
+        let alerts = [
+            { id: 1, product: "Spinaci Freschi", days: 2, type: "critical", message: "Scade tra 2 giorni" },
+            { id: 2, product: "Latte Fresco", days: 3, type: "critical", message: "Scade tra 3 giorni" },
+            { id: 3, product: "Filetto di Merluzzo", days: 1, type: "critical", message: "SCADE DOMANI" },
+            { id: 4, product: "Pomodori San Marzano", days: 6, type: "warning", message: "TMC tra 6 giorni" }
+        ];
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            renderProducts();
+            renderAlerts();
+            updateCounts();
+        });
+
+        // Navigazione tra tab
+        function showTab(tabName) {
+            // Nascondi tutte le tab
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Rimuovi classe active da tutte le tab
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostra la tab selezionata
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+            
+            // Aggiungi classe active alla tab selezionata
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            
+            // Aggiorna dati se necessario
+            if (tabName === 'products') {
+                renderProducts();
+            }
+        }
+
+        // Aggiorna dashboard
+        function updateDashboard() {
+            const today = new Date();
+            let criticalCount = 0;
+            let warningCount = 0;
+            
+            products.forEach(product => {
+                const expiryDate = new Date(product.expiry);
+                const daysDiff = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                
+                if (product.type === 'expiry' && daysDiff <= 3) {
+                    criticalCount++;
+                } else if (product.type === 'tmc' && daysDiff <= 7) {
+                    warningCount++;
+                }
+            });
+            
+            document.getElementById('critical-count').textContent = criticalCount;
+            document.getElementById('warning-count').textContent = warningCount;
+        }
+
+        // Renderizza prodotti
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const expiryDate = new Date(product.expiry);
+                const today = new Date();
+                const daysDiff = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                
+                let statusClass = '';
+                let statusText = '';
+                let statusBadge = '';
+                
+                if (product.type === 'expiry') {
+                    if (daysDiff <= 0) {
+                        statusClass = 'critical';
+                        statusText = 'SCADUTO';
+                        statusBadge = 'status-critical';
+                    } else if (daysDiff <= 3) {
+                        statusClass = 'critical';
+                        statusText = 'Critico';
+                        statusBadge = 'status-critical';
+                    } else if (daysDiff <= 7) {
+                        statusClass = 'warning';
+                        statusText = 'Attenzione';
+                        statusBadge = 'status-warning';
+                    } else {
+                        statusClass = '';
+                        statusText = 'Normale';
+                        statusBadge = 'status-ok';
+                    }
+                } else {
+                    if (daysDiff <= 7) {
+                        statusClass = 'warning';
+                        statusText = 'TMC Vicino';
+                        statusBadge = 'status-warning';
+                    } else {
+                        statusClass = '';
+                        statusText = 'Normale';
+                        statusBadge = 'status-ok';
+                    }
+                }
+                
+                const productHTML = `
+                    <div class="product-item ${statusClass}">
+                        <div>
+                            <strong>${product.name}</strong><br>
+                            <small>${getCategoryIcon(product.category)} ${product.location}</small>
+                        </div>
+                        <div>${formatDate(product.expiry)}</div>
+                        <div>${daysDiff > 0 ? daysDiff + ' giorni' : 'SCADUTO'}</div>
+                        <div>${product.type === 'expiry' ? '⚠️ Scadenza' : '📅 TMC'}</div>
+                        <div>
+                            <span class="status-badge ${statusBadge}">${statusText}</span><br>
+                            <button class="action-btn" style="margin-top: 5px; padding: 5px 10px; font-size: 12px;" onclick="manageProduct(${product.id})">
+                                Gestisci
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML += productHTML;
+            });
+        }
+
+        // Renderizza alert
+        function renderAlerts() {
+            const container = document.getElementById('alerts-list');
+            container.innerHTML = '';
+            
+            alerts.forEach(alert => {
+                const alertHTML = `
+                    <div class="alert-item ${alert.type === 'critical' ? 'critical' : 'warning'} new-alert">
+                        <div>
+                            <strong>${alert.product}</strong><br>
+                            <small>${alert.message}</small>
+                        </div>
+                        <div>
+                            <button class="action-btn" style="padding: 5px 10px; font-size: 12px;" onclick="resolveAlert(${alert.id})">
+                                ✅ Risolto
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += alertHTML;
+            });
+        }
+
+        // Aggiungi prodotto
+        function addProduct() {
+            const name = document.getElementById('product-name').value;
+            const category = document.getElementById('product-category').value;
+            const quantity = document.getElementById('product-quantity').value;
+            const expiry = document.getElementById('product-expiry').value;
+            const type = document.getElementById('expiry-type').value;
+            const location = document.getElementById('product-location').value;
+            
+            if (!name || !expiry) {
+                alert('Compila tutti i campi obbligatori');
+                return;
+            }
+            
+            const newProduct = {
+                id: products.length + 1,
+                name,
+                category,
+                expiry,
+                type,
+                quantity: parseInt(quantity) || 1,
+                location
+            };
+            
+            products.push(newProduct);
+            
+            // Reset form
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-quantity').value = '';
+            document.getElementById('product-expiry').value = '';
+            document.getElementById('product-location').value = '';
+            
+            updateDashboard();
+            renderProducts();
+            alert('Prodotto aggiunto con successo!');
+            
+            // Verifica se genera alert
+            const expiryDate = new Date(expiry);
+            const today = new Date();
+            const daysDiff = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+            
+            if ((type === 'expiry' && daysDiff <= 3) || (type === 'tmc' && daysDiff <= 7)) {
+                const alertType = type === 'expiry' ? 'critical' : 'warning';
+                const message = type === 'expiry' ? `Scade tra ${daysDiff} giorni` : `TMC tra ${daysDiff} giorni`;
+                
+                alerts.push({
+                    id: alerts.length + 1,
+                    product: name,
+                    days: daysDiff,
+                    type: alertType,
+                    message: message
+                });
+                
+                renderAlerts();
+            }
+        }
+
+        // Genera nuovo alert
+        function generateNewAlert() {
+            const sampleProducts = ['Yogurt', 'Pasta Fresca', 'Verdure Miste', 'Carne Macinata'];
+            const sampleProduct = sampleProducts[Math.floor(Math.random() * sampleProducts.length)];
+            const days = Math.floor(Math.random() * 3) + 1;
+            const type = Math.random() > 0.5 ? 'critical' : 'warning';
+            
+            const newAlert = {
+                id: alerts.length + 1,
+                product: sampleProduct,
+                days: days,
+                type: type,
+                message: type === 'critical' ? `Scade tra ${days} giorni` : `TMC tra ${days} giorni`
+            };
+            
+            alerts.push(newAlert);
+            renderAlerts();
+            updateCounts();
+            
+            // Mostra notifica
+            showNotification(`Nuovo alert per ${sampleProduct}`);
+        }
+
+        // Risolvi alert
+        function resolveAlert(alertId) {
+            alerts = alerts.filter(alert => alert.id !== alertId);
+            renderAlerts();
+            updateCounts();
+        }
+
+        // Gestisci prodotto
+        function manageProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const action = prompt(`Cosa vuoi fare con "${product.name}"?\n1. Utilizza in cucina\n2. Trasforma/Conserva\n3. Dona a ente benefico\n4. Segna come utilizzato`);
+            
+            switch(action) {
+                case '1':
+                    alert(`Prodotto "${product.name}" assegnato alla cucina per utilizzo immediato`);
+                    break;
+                case '2':
+                    alert(`Prodotto "${product.name}" marcato per trasformazione/conservazione`);
+                    break;
+                case '3':
+                    alert(`Prodotto "${product.name}" aggiunto alla lista donazioni`);
+                    break;
+                case '4':
+                    products = products.filter(p => p.id !== productId);
+                    renderProducts();
+                    updateDashboard();
+                    alert(`Prodotto "${product.name}" rimosso dall'inventario`);
+                    break;
+                default:
+                    alert('Azione annullata');
+            }
+        }
+
+        // Aggiorna contatori
+        function updateCounts() {
+            updateDashboard();
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('it-IT');
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                'vegetable': '🥦',
+                'meat': '🥩',
+                'fish': '🐟',
+                'dairy': '🧀',
+                'dry': '🍚'
+            };
+            return icons[category] || '📦';
+        }
+
+        // Modal functions
+        function showDonationModal() {
+            document.getElementById('donation-modal').classList.add('active');
+            
+            // Popola prodotti per donazione
+            const container = document.getElementById('donation-products');
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const expiryDate = new Date(product.expiry);
+                const today = new Date();
+                const daysDiff = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff > 0 && daysDiff <= 7) {
+                    container.innerHTML += `
+                        <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #eee;">
+                            <span>${product.name}</span>
+                            <span>${formatDate(product.expiry)}</span>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function showTrainingModal() {
+            document.getElementById('training-modal').classList.add('active');
+        }
+
+        function showFIFOGuide() {
+            document.getElementById('fifo-modal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Simulazione funzionalità
+        function saveAlertSettings() {
+            alert('Impostazioni alert salvate con successo!');
+        }
+
+        function generateMenuSuggestions() {
+            const suggestions = [];
+            const today = new Date();
+            
+            products.forEach(product => {
+                const expiryDate = new Date(product.expiry);
+                const daysDiff = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff <= 3) {
+                    suggestions.push(product.name);
+                }
+            });
+            
+            if (suggestions.length > 0) {
+                alert(`Suggerimenti menu del giorno basati su prodotti in scadenza:\n\n• ${suggestions.join('\n• ')}\n\nCondividi con lo chef!`);
+            } else {
+                alert('Nessun prodotto in scadenza imminente. Ottimo lavoro!');
+            }
+        }
+
+        function simulateRotation() {
+            const newProduct = document.getElementById('new-product').value;
+            const existingProduct = document.getElementById('existing-product').value;
+            
+            alert(`✅ Rotazione FIFO simulata:\n\nNuovo prodotto posizionato dietro:\n${newProduct}\n\nProdotto esistente rimane davanti:\n${existingProduct}\n\nIl personale utilizzerà prima il prodotto esistente.`);
+        }
+
+        function generateAlertReport() {
+            const criticalCount = alerts.filter(a => a.type === 'critical').length;
+            const warningCount = alerts.filter(a => a.type === 'warning').length;
+            
+            const report = `
+            📋 REPORT ALERT GIORNALIERO
+            Data: ${new Date().toLocaleDateString('it-IT')}
+            
+            🔴 ALERT CRITICI: ${criticalCount}
+            🟡 ALERT PREVENTIVI: ${warningCount}
+            
+            Prodotti da gestire urgentemente:
+            ${alerts.map(a => `• ${a.product}: ${a.message}`).join('\n')}
+            
+            Azioni consigliate:
+            1. Verifica prodotti critici
+            2. Contatta la cucina per utilizzo
+            3. Pianifica eventuali donazioni
+            4. Aggiorna inventario
+            
+            Firma: Sistema Gestione Scadenze
+            `;
+            
+            alert(report);
+        }
+
+        function showNotification(message) {
+            // Creazione notifica temporanea
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #0c4b33;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            notification.innerHTML = `🔔 ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
